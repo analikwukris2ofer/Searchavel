@@ -9,6 +9,10 @@ class Listing extends Model
 {
     use HasFactory;
 
+    // protected $fillable = ['title', 'company', 'location', 'website', 'email', 'description', 'tags'];
+    // here we fill in the properties that we want to allow mass assignment to. In other words when the create
+    // form is filled in and the controller validates the data. Properties here can then be directly filled in
+    // the database otherwise, laravel will return an error.
     public function scopeFilter($query, array $filters) {
         //this function works with the filter functionality in the ListingController
 
