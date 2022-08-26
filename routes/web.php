@@ -45,7 +45,11 @@ Route::get('/', [ListingController::class, 'index']);
 //     //     //path does not exist it will automatically throw an error.
 //     //     'listing' => $listing
 //     // ]);
-    
-// });
-Route::get('/listings/{listing}', [ListingController::class, 'show']);
 
+// });
+
+//Show Create Form
+Route::get('/listings/create', [ListingController::class, 'create']);
+
+//Single listing. Always make sure that this particular route is at the bottom
+Route::get('/listings/{listing}', [ListingController::class, 'show']);

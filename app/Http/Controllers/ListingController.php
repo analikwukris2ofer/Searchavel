@@ -34,6 +34,11 @@ class ListingController extends Controller
         ]);
 
     }
+
+    //Show Create Form
+    public function create() {
+        return view('listings.create');
+    }
 }
 //Common Resource Routes:
 //index - Show all listings
