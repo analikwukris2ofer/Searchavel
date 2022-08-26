@@ -4,7 +4,11 @@
 {{-- <div class="bg-gray-50 border border-gray-200 rounded p-6"> --}}
 <x-card>
     <div class="flex">
-        <img class="hidden w-48 mr-6 md:block" src="{{ asset('images/no-image.png') }}" alt="" />
+        <img class="hidden w-48 mr-6 md:block"
+            src="{{ $listing->logo ? asset('storage/' . $listing->logo) : asset('/images/no-image.png') }}"
+            alt="" />
+        {{-- over here the image is retrieved from the storage folder where it was saved, if it is available, otherwise
+            the no-image file is used. --}}
         <div>
             <h3 class="text-2xl">
                 <a href="/listings/{{ $listing->id }}">{{ $listing->title }}</a>
