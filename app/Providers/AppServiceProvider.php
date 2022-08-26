@@ -27,5 +27,7 @@ class AppServiceProvider extends ServiceProvider
         Model::unguard();
         //This will allow mass assignment into the tables without the need of a $fillable property in the models.
         //If you are going to use this method be sure you are aware of what is going into your database
+        // Paginator::useBootstrapFive();
+        //This changes the template for the default laravel paginator.
     }
 }

@@ -12,16 +12,23 @@ class ListingController extends Controller
     public function index(){
         // dd($request);
         // dd(request()->tag);
+        // dd(Listing::latest()->filter(request(['tag', 'search']))->paginate(2));
         return view('listings.index', [
             // 'heading' => 'Latest Listings',
             // 'listings' => Listing::all()
             //all() retrieves using a random order
-            'listings' => Listing::latest()->filter(request(['tag', 'search']))->get()
+            // 'listings' => Listing::latest()->filter(request(['tag', 'search']))->get()
             //This sorts by the latest posts. The scopefilter function from the Listing model is what 
             //enables you to be able to filter. Whatever you pay into the filters will be sent to the
             //Listing model and passed in as the $filters parameter. 
-            //The 'search' parameter is coming from the 'searchbox' in the listings page which is a partials
-
+            //The 'search' parameter is coming from the scopefilter function in the Listing model
+            //The filter function filters elements according to the items in the request in accordance with
+            //the criteria set at the Listings model page.
+            'listings' => Listing::latest()->filter(request(['tag', 'search']))->paginate(6)
+            //Paginate takes in the number of elements we want per page.
+            // 'listings' => Listing::latest()->filter(request(['tag', 'search']))->simplePaginate(6)
+            //This is similar to Paginate except that it has the next and previous buttons instead of numbers.
+     
         ]);
 
     }
@@ -46,6 +53,7 @@ class ListingController extends Controller
     public function store(Request $request) {
         // when we submit a form we usually get a token
         // dd($request->all());
+        //dd($request->file('logo'));
         $formFields = $request->validate([
             // These values are the name attributes from the form
             'title' => 'required',
@@ -58,6 +66,13 @@ class ListingController extends Controller
             'tags' => 'required',
             'description' => 'required'
         ]);
+
+        if($request->hasFile('logo')) {
+            //This checks if the $request contains a file in the 'logo' name space
+            $formFields['logo'] = $request->file('logo')->store('logos', 'public');
+            //this will store in public since we have configured the filesystem file and it will create
+            //a folder called logos in storage/app folder.  file('logo') is what we named it in the database.
+        }
 
         Listing::create($formFields);
         // This creates a new input into the 'listing table' in the searchavel database
