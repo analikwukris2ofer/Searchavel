@@ -81,6 +81,57 @@ class ListingController extends Controller
         return redirect('/')->with('message', 'Listing created successfully!');
         //This redirects to the home page and creates a flash message
     }
+
+    //Show Edit Form
+    public function edit(Listing $listing) {
+        // dd($listing->title);
+        return view('listings.edit', ['listing' => $listing]);
+    }
+
+    //Update Listing Data
+    public function update(Request $request, Listing $listing) {
+        // when we submit a form we usually get a token
+        // dd($request->all());
+        //dd($request->file('logo'));
+        $formFields = $request->validate([
+            // These values are the name attributes from the form
+            'title' => 'required',
+            'company' => 'required',
+            // This basically says that when company is used in the listings table the company field should be unique.
+            'location' => 'required',
+            'website' => 'required',
+            'email' => ['required', 'email'],
+            //This means that the email is required and it has to be formatted as an email.
+            'tags' => 'required',
+            'description' => 'required'
+        ]);
+
+        if($request->hasFile('logo')) {
+            //This checks if the $request contains a file in the 'logo' name space
+            $formFields['logo'] = $request->file('logo')->store('logos', 'public');
+            //this will store in public since we have configured the filesystem file and it will create
+            //a folder called logos in storage/app folder.  file('logo') is what we named it in the database.
+        }
+
+        //Listing::create($formFields);
+        // This creates a new input into the 'listing table' in the searchavel database
+
+        $listing->update($formFields);
+        // This updates the selected listing in the database.
+
+        // Session::flash('message', 'Listing Created');
+       // return redirect('/')->with('message', 'Listing created successfully!');
+        //This redirects to the home page and creates a flash message
+
+        return back()->with('message', 'Listing updated successfully!');
+        //return back keeps you on the same page after the update.
+    }
+
+    //Delete Listing
+    public function destroy(Listing $listing) {
+        $listing->delete();
+        return redirect('/')->with('message', 'Listing deleted successfully');
+    }
 }
 //Common Resource Routes:
 //index - Show all listings
