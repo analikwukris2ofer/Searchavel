@@ -50,4 +50,33 @@ class UserController extends Controller
         //This is a recommended extra security measure required when logging user out.
         return redirect('/')->with('message', 'You have been logged out!');
     }
+
+    // Show Login Form
+    public function login() {
+        return view('users.login');
+    }
+
+    //Authenticate User
+    public function authenticate(Request $request) {
+        $formFields = $request->validate([
+            'email' => ['required', 'email'],
+            // This ensures that email entries in database are unique to the users table and also to the 
+            // email field. the first value is the table 'users' and then the second value 'email' 
+            //tells it that the email field under the 'users' table should be unique.
+            // 'password' => ['required, confirmed, min:6']
+            'password' => 'required'
+        ]);
+
+        if(auth()->attempt($formFields)) {
+            //This will search the database and see if the user is already registered before it can proceed.
+            $request->session()->regenerate();
+            //Then a session is generated for the user.
+            return redirect('/')->with('message', 'You are now logged in');
+        }
+
+        return back()->withErrors(['email' => 'Invalid Credentials'])->onlyInput('email');
+        //If there are error with the credentials the page is returned and the errors
+        //whether from the email or password are all put under the 'email' field.
+
+    }
 }
