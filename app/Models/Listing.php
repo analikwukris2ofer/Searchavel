@@ -2,8 +2,9 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
+use App\Models\User;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Listing extends Model
 {
@@ -36,5 +37,12 @@ class Listing extends Model
             //it will pick the value of the search from the URL.
             ->orWhere('tags', 'like', '%' . request('search') . '%');
         }
+    }
+
+    // Relationship To User
+    public function user() {
+        return $this->belongsTo(User::class, 'user_id');
+        //creates a relationship between Listing and the User. This 'user_id' name has to be the same name you
+        //used on the listings table migration.
     }
 }

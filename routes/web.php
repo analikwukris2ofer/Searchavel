@@ -50,19 +50,23 @@ Route::get('/', [ListingController::class, 'index']);
 // });
 
 //Show Create Form
-Route::get('/listings/create', [ListingController::class, 'create']);
+Route::get('/listings/create', [ListingController::class, 'create'])->middleware('auth');
+//The auth middleware ensures that only authenticated users can visit this route.
 
 //Store Listing Data
-Route::post('/listings', [ListingController::class, 'store']);
+Route::post('/listings', [ListingController::class, 'store'])->middleware('auth');
 
 // Show Edit Form
-Route::get('/listings/{listing}/edit', [ListingController::class, 'edit']);
+Route::get('/listings/{listing}/edit', [ListingController::class, 'edit'])->middleware('auth');
 
 //Update Listing
-Route::put('/listings/{listing}', [ListingController::class, 'update']);
+Route::put('/listings/{listing}', [ListingController::class, 'update'])->middleware('auth');
 
 //Delete Listing
-Route::delete('/listings/{listing}', [ListingController::class, 'destroy']);
+Route::delete('/listings/{listing}', [ListingController::class, 'destroy'])->middleware('auth');
+
+// Manage Listings
+Route::get('/listings/manage', [ListingController::class, 'manage'])->middleware('auth');
 
 //Single listing. Always make sure that this particular route is at the bottom
 Route::get('/listings/{listing}', [ListingController::class, 'show']);
@@ -78,16 +82,23 @@ Route::get('/listings/{listing}', [ListingController::class, 'show']);
 //destroy - Delete listing
 
 // Show Register/Create Form
-Route::get('/register', [UserController::class, 'create']);
+Route::get('/register', [UserController::class, 'create'])->middleware('guest');
+//only guests can access this route. That is unregistered/unauthenticated users.
 
 // Create New User
 Route::post('/users', [UserController::class, 'store']);
 
 // Log User Out
-Route::post('/logout', [UserController::class, 'logout']);
+Route::post('/logout', [UserController::class, 'logout'])->middleware('auth');;
 
 // Show Login Form
-Route::get('/login', [UserController::class, 'login']);
+Route::get('/login', [UserController::class, 'login'])->name('login')->middleware('guest');
+//This names this route as 'login'. This important for the Authenticate.php file because if the user is not
+//authorized and he clicks on a link with ->middleware('auth') he will automatically be redirected to this link.
+//on the other hand if the user is authorized and he tries to go to a link with a middleware('guest')
+//The RouteServiceProvider.php will be responsible for re-routing this user we can change the
+//from   public const HOME = '/home'; to   public const HOME = '/'; to re-route the user
 
 // Log In User
 Route::post('/users/authenticate', [UserController::class, 'authenticate']);
+

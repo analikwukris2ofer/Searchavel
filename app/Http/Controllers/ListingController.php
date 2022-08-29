@@ -10,6 +10,7 @@ class ListingController extends Controller
 {
     //Get and show all listings
     public function index(){
+        // dd(auth()->user()->listings()->get());
         // dd($request);
         // dd(request()->tag);
         // dd(Listing::latest()->filter(request(['tag', 'search']))->paginate(2));
@@ -74,6 +75,10 @@ class ListingController extends Controller
             //a folder called logos in storage/app folder.  file('logo') is what we named it in the database.
         }
 
+        $formFields['user_id'] = auth()->id();
+        //here we add the 'user_id' field to the listings table when creating a new listing.
+        //we get the id of the current authorized user using the auth()->id() directive.
+
         Listing::create($formFields);
         // This creates a new input into the 'listing table' in the searchavel database
 
@@ -93,6 +98,13 @@ class ListingController extends Controller
         // when we submit a form we usually get a token
         // dd($request->all());
         //dd($request->file('logo'));
+        //Make sure logged in user is owner
+        if($listing->user_id != auth()->id()) {
+            abort(403, 'Unauthorized Action');
+        //This checks if the user_id on the listing that wants to be updated is the same as the 
+        //id() of the authorized user. If this is not the case an error is returned.
+        }
+
         $formFields = $request->validate([
             // These values are the name attributes from the form
             'title' => 'required',
@@ -129,8 +141,22 @@ class ListingController extends Controller
 
     //Delete Listing
     public function destroy(Listing $listing) {
+        if($listing->user_id != auth()->id()) {
+            abort(403, 'Unauthorized Action');
+        //This checks if the user_id on the listing that wants to be updated is the same as the 
+        //id() of the authorized user. If this is not the case an error is returned.
+        }
+
         $listing->delete();
         return redirect('/')->with('message', 'Listing deleted successfully');
+    }
+
+    // Manage Listings
+    public function manage() {
+        return view('listings.manage', ['listings' => auth()->user()->listings()->get()]);
+        //This uses the auth() directive to get us the currently authenticated user. This user
+        //has a listings method which we use to build a one to many relationship with its
+        //listings. Then we ask it to get() all the listings.
     }
 }
 //Common Resource Routes:

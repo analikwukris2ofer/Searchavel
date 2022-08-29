@@ -4,6 +4,7 @@ namespace Database\Seeders;
 
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 
+use App\Models\User;
 use App\Models\Listing;
 use Illuminate\Database\Seeder;
 
@@ -16,9 +17,21 @@ class DatabaseSeeder extends Seeder
      */
     public function run()
     {
-        \App\Models\User::factory(5)->create();
+        //  \App\Models\User::factory(5)->create();
 
-        Listing::factory(6)->create();
+        //  Listing::factory(6)->create();
+        $user = User::factory()->create([
+            'name' => 'John Doe',
+            'email' => 'john@gmail.com'
+        ]);
+        //with the create we can control fields in the new User which is to be created and not allow
+        //it to be randomly generated.
+
+        Listing::factory(6)->create([
+            'user_id' => $user->id
+        ]);
+        //here we define six listings using the 'id' of the user we just created since we have 
+        //created a relationship in our migrations.
 
         // Listing::create(
         //     [

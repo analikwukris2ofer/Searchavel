@@ -41,4 +41,13 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
+
+    //Relationships With Listings
+    public function listings() {
+        return $this->hasMany(Listing::class, 'user_id');
+        //creates a relationship between User model and the Listing model. This relationship is facilitated
+        //by the foreign key which is the 'user_id'
+        //with this relationship, we can now easily get a users listings.
+        //listings are searched by the 'user_id'
+    }
 }

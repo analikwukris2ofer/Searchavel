@@ -15,6 +15,11 @@ return new class extends Migration
     {
         Schema::create('listings', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('user_id')->constrained()->onDelete('cascade');
+            //The onDelete('cascade') means that If we have a user who creates a set of listings
+            //and this user is deleted, then the listings
+            // created by this user will be deleted if this user is deleted.
+            //constrained means that only the ids available in the users table will have listings.
             $table->string('title');
             $table->string('logo')->nullable();
             // we dont actually store the image on the database only the path to the file on the database
